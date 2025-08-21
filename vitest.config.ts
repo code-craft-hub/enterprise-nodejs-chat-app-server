@@ -3,7 +3,6 @@ import { resolve } from 'path';
 
 export default defineConfig({
   test: {
-    // Environment
     environment: 'node',
     
     // Global test setup
@@ -30,7 +29,10 @@ export default defineConfig({
         'coverage/',
         '**/*.d.ts',
         'src/types/',
-        'vitest.config.ts'
+        'vitest.config.ts',
+        'eslint.config.mts',
+        'src/test/helpers/testHelpers.ts',
+        'src/server.ts'
       ],
       thresholds: {
         global: {
@@ -44,11 +46,6 @@ export default defineConfig({
     
     // Reporters
     reporters: ['verbose'],
-    // outputFile: {
-    //   json: './test-results.json',
-    //   html: './test-results.html'
-    // },
-    
     // Watch options
     watch: true,
     
@@ -57,13 +54,6 @@ export default defineConfig({
     
     // Silent console logs during tests
     silent: false,
-    
-    // Run tests in parallel
-    // threads: true,
-    // maxThreads: 4,
-    // minThreads: 1,
-    
-    
     // Pool options for better performance
     pool: 'threads'
   },

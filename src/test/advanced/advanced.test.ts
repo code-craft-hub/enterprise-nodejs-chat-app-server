@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import request from "supertest";
 import app from "../../app";
 import {
@@ -132,7 +132,7 @@ describe("Advanced Testing Patterns", () => {
       const response = await request(app)
         .post("/api/users")
         .set("Content-Type", "application/json")
-        .send('{"malformed": json}');
+        .send({ malformed: "json" });
 
       // Express handles this automatically with 400
       expect(response.status).toBe(400);

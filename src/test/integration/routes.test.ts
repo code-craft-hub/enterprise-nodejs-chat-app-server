@@ -69,7 +69,7 @@ describe("Integration Tests - API Routes", () => {
       const response = await request(app)
         .post("/api/users")
         .set("Content-Type", "application/json")
-        .send('{"invalid": json}')
+        .send({ invalid: "json" })
         .expect(400);
 
       // Express will handle this automatically
