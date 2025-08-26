@@ -1,13 +1,22 @@
 import express, { Request, Response, NextFunction, Application } from "express";
 import cors from "cors";
+import { Server } from "socket.io";
+import { createServer } from "http";
 
-// Create Express app
 const app: Application = express();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+const server = createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: true,
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
 
 // Routes
 app.get("/", (req: Request, res: Response) => {
@@ -91,5 +100,13 @@ app.use((req: Request, res: Response) => {
     message: `Route ${req.method} ${req.url} not found`,
   });
 });
+
+export const getServer = () => {
+  return server;
+};
+
+export const getIO = () => {
+  return io;
+};
 
 export default app;
