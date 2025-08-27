@@ -1,8 +1,11 @@
-import app, { getIO, getServer } from "./app";
+import "dotenv/config";
+import { getIO, getServer } from "./app";
 
 const PORT = process.env.PORT || 3000;
 
-const server = app.listen(PORT, () => {
+const server = getServer();
+
+server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
 });
@@ -22,7 +25,6 @@ process.on("unhandledRejection", (reason, promise) => {
 const gracefulShutdown = (signal: string) => {
   console.log(`\n${signal} received. Starting graceful shutdown...`);
 
-  const server = getServer();
   const io = getIO();
 
   // Stop accepting new connections

@@ -1,7 +1,7 @@
-import { Request, Response } from 'express';
+import { Request, Response } from "express";
 // import { ChatService } from './service';
-import bcrypt from 'bcryptjs';
-import { ChatService } from '@/service/chat.service';
+import bcrypt from "bcryptjs";
+import { ChatService } from "@/service/chat.service";
 
 export class ChatController {
   constructor(private chatService: ChatService) {}
@@ -14,19 +14,19 @@ export class ChatController {
       // Check if user already exists
       const existingUser = await this.chatService.getUserByUsername(username);
       if (existingUser) {
-         res.status(400).json({ error: 'Username already exists' });return
+        res.status(400).json({ error: "Username already exists" });
+        return;
       }
 
       // Hash password
       const hashedPassword = await bcrypt.hash(password, 10);
-console.log(hashedPassword)
+      console.log(hashedPassword);
       // Create user
       const user = await this.chatService.createUser({
         username,
         email,
-        status: 'offline',
+        status: "offline",
         avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`,
-        
       });
 
       // Generate token
@@ -37,8 +37,8 @@ console.log(hashedPassword)
         token,
       });
     } catch (error) {
-      console.error('Registration error:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      console.error("Registration error:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
   };
 
@@ -46,10 +46,13 @@ console.log(hashedPassword)
     try {
       const { username } = req.body;
 
+      console.log(username)
+
       // Find user
       const user = await this.chatService.getUserByUsername(username);
       if (!user) {
-         res.status(401).json({ error: 'Invalid credentials' });return
+        res.status(401).json({ error: "Invalid credentials" });
+        return;
       }
 
       // For demo purposes, we'll skip password verification
@@ -63,8 +66,8 @@ console.log(hashedPassword)
         token,
       });
     } catch (error) {
-      console.error('Login error:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      console.error("Login error:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
   };
 
@@ -75,8 +78,8 @@ console.log(hashedPassword)
       const rooms = await this.chatService.getUserRooms(userId);
       res.json(rooms);
     } catch (error) {
-      console.error('Get rooms error:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      console.error("Get rooms error:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
   };
 
@@ -87,7 +90,7 @@ console.log(hashedPassword)
 
       const room = await this.chatService.createRoom({
         name,
-        type: type || 'channel',
+        type: type || "channel",
         participants: [userId],
         createdBy: userId,
         isPrivate: isPrivate || false,
@@ -96,8 +99,8 @@ console.log(hashedPassword)
 
       res.status(201).json(room);
     } catch (error) {
-      console.error('Create room error:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      console.error("Create room error:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
   };
 
@@ -111,11 +114,11 @@ console.log(hashedPassword)
         const room = await this.chatService.getRoomById(roomId);
         res.json(room);
       } else {
-        res.status(404).json({ error: 'Room not found' });
+        res.status(404).json({ error: "Room not found" });
       }
     } catch (error) {
-      console.error('Join room error:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      console.error("Join room error:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
   };
 
@@ -133,8 +136,8 @@ console.log(hashedPassword)
 
       res.json(messages);
     } catch (error) {
-      console.error('Get messages error:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      console.error("Get messages error:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
   };
 
@@ -144,8 +147,8 @@ console.log(hashedPassword)
       const connectedUsers = this.chatService.getConnectedUsers();
       res.json(connectedUsers);
     } catch (error) {
-      console.error('Get users error:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      console.error("Get users error:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
   };
 
@@ -153,15 +156,16 @@ console.log(hashedPassword)
     try {
       const userId = (req as any).user.userId;
       const user = await this.chatService.getUserById(userId);
-      
+
       if (!user) {
-         res.status(404).json({ error: 'User not found' });return
+        res.status(404).json({ error: "User not found" });
+        return;
       }
 
       res.json(user);
     } catch (error) {
-      console.error('Get profile error:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      console.error("Get profile error:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
   };
 }

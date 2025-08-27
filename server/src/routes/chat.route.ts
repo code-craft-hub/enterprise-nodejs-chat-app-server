@@ -1,35 +1,36 @@
-import { ChatController } from '@/controller/chat.controller';
-import { authMiddleware } from '@/middleware/chat.middleware';
-import { ChatService } from '@/service/chat.service';
-import { Router } from 'express';
-export const createRoutes = (chatService: ChatService): Router => {
-  const router = Router();
-  const controller = new ChatController(chatService);
-  const auth = authMiddleware(chatService);
+import { ChatController } from "@/controller/chat.controller";
+import { authMiddleware } from "@/middleware/chat.middleware";
+import { ChatService } from "@/service/chat.service";
+import { Router } from "express";
 
-  // Health check
-  router.get('/health', (_req, res) => {
-    res.json({ status: 'OK', timestamp: new Date().toISOString() });
-  });
+const chatService = new ChatService();
 
-  // Authentication routes
-  router.post('/auth/register', controller.register);
-  router.post('/auth/login', controller.login);
+const chatRouter: Router = Router();
+const controller = new ChatController(chatService);
+const auth = authMiddleware(chatService);
 
-  // Protected routes
-  router.use(auth);
+// Health check
+chatRouter.get("/health", (_req, res) => {
+  res.json({ status: "OK", timestamp: new Date().toISOString() });
+});
 
-  // User routes
-  router.get('/profile', controller.getProfile);
-  router.get('/users', controller.getUsers);
+// Authentication routes
+chatRouter.post("/auth/register", controller.register);
+chatRouter.post("/auth/login", controller.login);
 
-  // Room routes
-  router.get('/rooms', controller.getRooms);
-  router.post('/rooms', controller.createRoom);
-  router.post('/rooms/:roomId/join', controller.joinRoom);
+// Protected routes
+chatRouter.use(auth);
 
-  // Message routes
-  router.get('/rooms/:roomId/messages', controller.getRoomMessages);
+// User routes
+chatRouter.get("/profile", controller.getProfile);
+chatRouter.get("/users", controller.getUsers);
 
-  return router;
-};
+// Room routes
+chatRouter.get("/rooms", controller.getRooms);
+chatRouter.post("/rooms", controller.createRoom);
+chatRouter.post("/rooms/:roomId/join", controller.joinRoom);
+
+// Message routes
+chatRouter.get("/rooms/:roomId/messages", controller.getRoomMessages);
+
+export default chatRouter;
